@@ -3,7 +3,7 @@ import time
 import datetime
 import copy
 from .utils import convert_num
-
+from .tw_col_names import gen_col_names
 def parse_tw_stock_price_all(stock_data,**kwargs):
 
     """
@@ -155,3 +155,21 @@ def gen_params_example():
     print('爬取其中一天全部股票的價格')
     print(f'ex:{example_params}')
     return example_params
+
+def gen_col_names():
+
+    items = [
+        "stock_id",
+        "stock_name",
+        "vol",
+        "trade_amount",
+        "open",
+        "high",
+        "low",
+        "close",
+        "spread",
+        "trade_num",
+        "date"
+    ]
+    col_names = gen_col_names(items)
+    return col_names

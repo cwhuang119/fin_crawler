@@ -62,3 +62,10 @@ class FinCrawler:
             'gen_params_example'
             )
         return gen_params_example()
+    @classmethod
+    def col_names(cls,data_type):
+        gen_col_names = getattr(
+            importlib.import_module(f'{cls.plugin_path}.{data_type}'),
+            'gen_col_names'
+            )
+        return gen_col_names()

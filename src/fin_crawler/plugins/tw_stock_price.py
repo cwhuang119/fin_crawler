@@ -2,7 +2,7 @@ import time
 import datetime
 import copy
 from .utils import convert_num,convert_tw_year
-
+from .tw_col_names import gen_col_names
 def parse_tw_stock_price(stock_data,**kwargs):
     """
     資料來源:
@@ -121,3 +121,21 @@ def gen_params_example():
     print('爬取當月stcokNo的股票價格')
     print(f'ex:{example_params}')
     return example_params
+
+def gen_col_names():
+    items = [
+        "stock_id",
+        "vol",
+        "trade_amount",
+        "open",
+        "high",
+        "low",
+        "close",
+        "spread",
+        "trade_num",
+        "date"
+    ]
+
+    col_names = gen_col_names(items)
+    
+    return col_names

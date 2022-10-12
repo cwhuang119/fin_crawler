@@ -3,7 +3,7 @@ from fin_crawler import FinCrawler
 import time
 class Test_tw_stock_price_all_real(unittest.TestCase):
 
-    def test_reuqest(self):
+    def test_request(self):
         time.sleep(4)
         result = {
             'date':['20210922', '20210922', '20210922', '20210922', '20210922', '20210922', '20210922', '20210922', '20210922', '20210922'],
