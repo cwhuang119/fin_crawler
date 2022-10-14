@@ -40,7 +40,7 @@ class Test_tw_stock_price_all_real(unittest.TestCase):
                         '078432',
                         '07060P']
         }
-        data = FinCrawler.get('tw_institutional_investors',{'date':self.date})
+        data = FinCrawler.get('tw_institutional_investors_daily',{'date':self.date})
         self.assertEqual(data['IIFI_net_amount_woIIFD'][:10],result['IIFI_net_amount_woIIFD'])
         self.assertEqual(data['IIIT_sell_amount'][:10],result['IIIT_sell_amount'])
         self.assertEqual(data['II_net_amount'][:10],result['II_net_amount'])

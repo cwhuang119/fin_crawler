@@ -2,8 +2,9 @@ import time
 import datetime
 import copy
 from .utils import convert_num,convert_tw_year
-from .tw_col_names import gen_col_names
-def parse_tw_stock_price(stock_data,**kwargs):
+from .tw_col_names import convert_col_names
+
+def parse(stock_data,**kwargs):
     """
     資料來源:
         https://www.twse.com.tw/zh/page/trading/exchange/STOCK_DAY.html
@@ -94,7 +95,7 @@ def gen_params(**params):
             'response_type':'json'
         },
         'parse':{
-            'parse_data':parse_tw_stock_price,
+            'parse_data':parse,
             'kwargs':{
                 'date':'20040925',
                 'stock_id':'2330'
@@ -136,6 +137,6 @@ def gen_col_names():
         "date"
     ]
 
-    col_names = gen_col_names(items)
+    col_names = convert_col_names(items)
     
     return col_names

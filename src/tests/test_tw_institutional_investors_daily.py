@@ -1,6 +1,6 @@
 import unittest
 
-from fin_crawler.plugins.tw_institutional_investors import gen_params_example,gen_params,parse_tw_institutional_investors
+from fin_crawler.plugins.tw_institutional_investors_daily import gen_params_example,gen_params,parse
 
 class Test_tw_stock_price(unittest.TestCase):
     def setUp(self):
@@ -74,7 +74,7 @@ class Test_tw_stock_price(unittest.TestCase):
                 '32,057,360']
             ]
         }
-        result = parse_tw_institutional_investors(test_data,**{'date':self.date})
+        result = parse(test_data,**{'date':self.date})
         self.assertEqual(
             result,
             {
@@ -128,7 +128,7 @@ class Test_tw_stock_price(unittest.TestCase):
                 '32,057,360']
             ]
         }
-        result = parse_tw_institutional_investors(test_data,**{'date':self.date})
+        result = parse(test_data,**{'date':self.date})
         self.assertEqual(result,self.empty_result)
     def test_parse_no_key(self):
         #without key 'data'
@@ -156,10 +156,10 @@ class Test_tw_stock_price(unittest.TestCase):
                 '32,057,360']
             ]
         }
-        result = parse_tw_institutional_investors(test_data,**{'date':self.date})
+        result = parse(test_data,**{'date':self.date})
         self.assertEqual(result,self.empty_result)
     def test_parse_no_data(self):
         #empty test ata
         test_data = {}
-        result = parse_tw_institutional_investors(test_data,**{'date':self.date})
+        result = parse(test_data,**{'date':self.date})
         self.assertEqual(result,self.empty_result)

@@ -10,7 +10,8 @@ class Crawler:
     
     """
 
-    def __init__(self,parameters):
+    def __init__(self,parameters: dict):
+
         self.parameters = parameters
         self.fetch_params = self.parameters['fetch']
         self.fetch_params['url'] = self.gen_url(self.fetch_params)
@@ -19,6 +20,7 @@ class Crawler:
         self.fetcher = Fetcher(self.fetch_params)
         self.parse = self.parameters['parse']['parse_data']
         self.parse_kwargs = self.parameters['parse']['kwargs']
+
     def gen_url(self,fetch_params):
         url = fetch_params['url_template']
         for param_name,param_value in fetch_params['url_params'].items():
@@ -32,7 +34,7 @@ class Crawler:
     #     return headers
     # def gen_data(self,fetch_params):
     #     return {}
-    def fetch(self):
+    def fetch(self)->dict:
         response_data = self.fetcher.fetch()
         return self.parse(response_data,**self.parse_kwargs)
 
@@ -42,7 +44,7 @@ class Crawler:
 class FinCrawler:
     plugin_path = 'fin_crawler.plugins'
     @classmethod
-    def get(cls,data_type,params):
+    def get(cls,data_type,params={}):
         gen_params = getattr(
             importlib.import_module(f'{cls.plugin_path}.{data_type}'),
             'gen_params'

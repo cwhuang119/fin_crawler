@@ -1,8 +1,8 @@
 import unittest
 
-from fin_crawler.plugins.tw_stock_price_all import gen_params_example,gen_params,parse_tw_stock_price_all
+from fin_crawler.plugins.tw_stock_price_daily import gen_params_example,gen_params,parse
 
-class Test_tw_stock_price_all(unittest.TestCase):
+class Test_tw_stock_price_dialy(unittest.TestCase):
     
     def test_gen_params_example(self):
         self.assertEqual({'date':'20220920'},gen_params_example())
@@ -23,7 +23,7 @@ class Test_tw_stock_price_all(unittest.TestCase):
             gen_params(**{'date':'2022-09-88'})
 
 
-    def test_parse_tw_stock_price(self):
+    def test_parse(self):
         test_data = {
             'stat':'OK',
             'data9':[
@@ -45,7 +45,7 @@ class Test_tw_stock_price_all(unittest.TestCase):
                 '0.00'],
             ]
         }
-        result = parse_tw_stock_price_all(test_data,**{'date':'20220920'})
+        result = parse(test_data,**{'date':'20220920'})
         self.assertEqual(
             result,
             {
@@ -85,7 +85,7 @@ class Test_tw_stock_price_all(unittest.TestCase):
                 '0.00'],
             ]
         }
-        result = parse_tw_stock_price_all(test_data,**{'date':'20220920'})
+        result = parse(test_data,**{'date':'20220920'})
         self.assertEqual(
             result,
             {
@@ -141,7 +141,7 @@ class Test_tw_stock_price_all(unittest.TestCase):
                 '0.00'],
             ]
         }
-        result = parse_tw_stock_price_all(test_data,**{'date':'20220922'})
+        result = parse(test_data,**{'date':'20220922'})
         self.assertEqual(result,empty_result)
 
         #without key 'data'
@@ -166,10 +166,10 @@ class Test_tw_stock_price_all(unittest.TestCase):
                 '0.00'],
             ]
         }
-        result = parse_tw_stock_price_all(test_data,**{'date':'20220922','stock_id':'2330'})
+        result = parse(test_data,**{'date':'20220922','stock_id':'2330'})
         self.assertEqual(result,empty_result)
 
         #empty test ata
         test_data = {}
-        result = parse_tw_stock_price_all(test_data,**{'date':'20220922','stock_id':'2330'})
+        result = parse(test_data,**{'date':'20220922','stock_id':'2330'})
         self.assertEqual(result,empty_result)

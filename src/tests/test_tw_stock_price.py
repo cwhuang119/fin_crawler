@@ -1,6 +1,6 @@
 import unittest
 
-from fin_crawler.plugins.tw_stock_price import gen_params_example,gen_params,parse_tw_stock_price
+from fin_crawler.plugins.tw_stock_price import gen_params_example,gen_params,parse
 
 class Test_tw_stock_price(unittest.TestCase):
     
@@ -25,7 +25,7 @@ class Test_tw_stock_price(unittest.TestCase):
             gen_params(**{'date':'2022-09-88','stock_id':'2330'})
 
 
-    def test_parse_tw_stock_price(self):
+    def test_parse(self):
         test_data = {
             'stat':'OK',
             'data':[
@@ -40,7 +40,7 @@ class Test_tw_stock_price(unittest.TestCase):
                 '93,631'],
             ]
         }
-        result = parse_tw_stock_price(test_data,**{'date':'20220922','stock_id':'2330'})
+        result = parse(test_data,**{'date':'20220922','stock_id':'2330'})
         self.assertEqual(
             result,
             {
@@ -84,7 +84,7 @@ class Test_tw_stock_price(unittest.TestCase):
                 '93,631'],
             ]
         }
-        result = parse_tw_stock_price(test_data,**{'date':'20220922','stock_id':'2330'})
+        result = parse(test_data,**{'date':'20220922','stock_id':'2330'})
         self.assertEqual(result,empty_result)
 
         #without key 'data'
@@ -102,10 +102,10 @@ class Test_tw_stock_price(unittest.TestCase):
                 '93,631'],
             ]
         }
-        result = parse_tw_stock_price(test_data,**{'date':'20220922','stock_id':'2330'})
+        result = parse(test_data,**{'date':'20220922','stock_id':'2330'})
         self.assertEqual(result,empty_result)
 
         #empty test ata
         test_data = {}
-        result = parse_tw_stock_price(test_data,**{'date':'20220922','stock_id':'2330'})
+        result = parse(test_data,**{'date':'20220922','stock_id':'2330'})
         self.assertEqual(result,empty_result)

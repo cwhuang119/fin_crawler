@@ -3,8 +3,9 @@ import time
 import datetime
 import copy
 from .utils import convert_num
-from .tw_col_names import gen_col_names
-def parse_tw_stock_price_all(stock_data,**kwargs):
+from .tw_col_names import convert_col_names
+
+def parse(stock_data,**kwargs):
 
     """
     資料來源:
@@ -133,7 +134,7 @@ def gen_params(**params):
             'response_type':'json'
         },
         'parse':{
-            'parse_data':parse_tw_stock_price_all,
+            'parse_data':parse,
             'kwargs':{
                 'date':'20040925'
             }
@@ -171,5 +172,6 @@ def gen_col_names():
         "trade_num",
         "date"
     ]
-    col_names = gen_col_names(items)
+    col_names = convert_col_names(items)
+
     return col_names

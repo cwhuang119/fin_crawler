@@ -1,8 +1,8 @@
 import time
 import datetime
 import copy
-from .utils import convert_num,convert_tw_year
-from .tw_col_names import gen_col_names
+from .utils import convert_num
+from .tw_col_names import convert_col_names
 
 
 items = [
@@ -30,7 +30,7 @@ items = [
 
 
 
-def parse_tw_institutional_investors(stock_data,**kwargs):
+def parse(stock_data,**kwargs):
     """
     資料來源:
         https://www.twse.com.tw/zh/page/trading/fund/T86.html
@@ -135,7 +135,7 @@ def gen_params(**params):
             'response_type':'json'
         },
         'parse':{
-            'parse_data':parse_tw_institutional_investors,
+            'parse_data':parse,
             'kwargs':{
                 'date':'20221012',
             }
@@ -161,6 +161,6 @@ def gen_params_example():
 
 def gen_col_names():
 
-    col_names = gen_col_names(items)
+    col_names = convert_col_names(items)
     
     return col_names
