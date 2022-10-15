@@ -1,6 +1,8 @@
 import math
 
 def convert_num(num_str):
+    if len(num_str)==0:
+        return math.nan
     if num_str=='--':
         return math.nan
     elif '-' in num_str:

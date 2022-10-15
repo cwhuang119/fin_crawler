@@ -1,5 +1,4 @@
 
-from dataclasses import fields
 import time
 import datetime
 import copy
@@ -123,7 +122,7 @@ def parse(data,**kwargs):
             template = {}
             for col_name,value in zip(col_names,row):
                 template[col_name]=value
-            
+
             formated_row = {}
             # format data
             for col_name,value in template.items():
@@ -131,16 +130,11 @@ def parse(data,**kwargs):
 
                 # convert to number and insert
                 if col_name in num_fields:
-                    try:
-                        value = convert_num(value)
-                    except:
-                        print(value)
+                    value = convert_num(value)
                 if col_name not in ['漲跌(+/-)','漲跌價差']:
                     formated_row[convert_col_name]=value
             
             # add converted data
-            print(template['漲跌價差'])
-            print(template['漲跌(+/-)'])
             formated_row['spread'] = convert_num(template['漲跌價差'])*1 if '+' in template['漲跌(+/-)'] else -1
             # add date
             formated_row['date'] = kwargs.get('date') or ''
