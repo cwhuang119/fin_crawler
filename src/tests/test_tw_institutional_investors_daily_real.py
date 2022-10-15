@@ -3,45 +3,58 @@ from fin_crawler import FinCrawler
 import time
 class Test_tw_stock_price_all_real(unittest.TestCase):
     def setUp(self):
-        self.date = '20220922'
+        self.date = '20221007'
     def test_request(self):
         time.sleep(4)
-        result = {
-            'date':[self.date]*10,
-            'IIFI_net_amount_woIIFD':[-84000.0,
-                29006711.0,
-                11132000.0,
-                -871000.0,
-                0.0,
-                0.0,
-                -132000.0,
-                0.0,
-                0.0,
-                0.0],
-            'IIIT_sell_amount':[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-            'II_net_amount':[131158773.0,
-                            28480928.0,
-                            24199022.0,
-                            13604146.0,
-                            9001692.0,
-                            7395000.0,
-                            7192000.0,
-                            6473377.0,
-                            4662000.0,
-                            4490000.0],
-            'stock_id':['00632R',
-                        '2834',
-                        '00673R',
-                        '00671R',
-                        '00676R',
-                        '06809P',
-                        '00664R',
-                        '00669R',
-                        '078432',
-                        '07060P']
+        result_idx10={
+            'stock_id': '2915',
+            'stock_name': '潤泰全',
+            'IIFI_buy_amount_woIIFD': 4154000.0,
+            'IIFI_sell_amount_woIIFD': 781000.0,
+            'IIFI_net_amount_woIIFD': 3373000.0,
+            'IIFD_buy_amount': 0.0,
+            'IIFD_sell_amount': 0.0,
+            'IIFD_net_amount': 0.0,
+            'IIIT_buy_amount': 0.0,
+            'IIIT_sell_amount': 1000.0,
+            'IIIT_net_amount': -1000.0,
+            'IID_net_amount': -26000.0,
+            'IID_buy_amount_self': 70000.0,
+            'IID_sell_amount_self': 108000.0,
+            'IID_net_amount_self': -38000.0,
+            'IID_buy_amount_hedging': 18000.0,
+            'IID_sell_amount_hedging': 6000.0,
+            'IID_net_amount_hedging': 12000.0,
+            'II_net_amount': 3346000.0,
+            'date': '20221007'
+        }
+        result_idx500={
+            'stock_id': '067464',
+            'stock_name': 'T50正2元大1C購03',
+            'IIFI_buy_amount_woIIFD': 0.0,
+            'IIFI_sell_amount_woIIFD': 0.0,
+            'IIFI_net_amount_woIIFD': 0.0,
+            'IIFD_buy_amount': 0.0,
+            'IIFD_sell_amount': 0.0,
+            'IIFD_net_amount': 0.0,
+            'IIIT_buy_amount': 0.0,
+            'IIIT_sell_amount': 0.0,
+            'IIIT_net_amount': 0.0,
+            'IID_net_amount': 301000.0,
+            'IID_buy_amount_self': 0.0,
+            'IID_sell_amount_self': 0.0,
+            'IID_net_amount_self': 0.0,
+            'IID_buy_amount_hedging': 301000.0,
+            'IID_sell_amount_hedging': 0.0,
+            'IID_net_amount_hedging': 301000.0,
+            'II_net_amount': 301000.0,
+            'date': '20221007'
         }
         data = FinCrawler.get('tw_institutional_investors_daily',{'date':self.date})
-        self.assertEqual(data['IIFI_net_amount_woIIFD'][:10],result['IIFI_net_amount_woIIFD'])
-        self.assertEqual(data['IIIT_sell_amount'][:10],result['IIIT_sell_amount'])
-        self.assertEqual(data['II_net_amount'][:10],result['II_net_amount'])
-        self.assertEqual(data['stock_id'][:10],result['stock_id'])
+        self.assertEqual(data[10],result_idx10)
+        self.assertEqual(data[500],result_idx500)
+    
+    def test_request_no_data(self):
+        time.sleep(4)
+        data = FinCrawler.get('tw_institutional_investors_daily',{'date':'20221010'})
+        self.assertEqual(data,[])

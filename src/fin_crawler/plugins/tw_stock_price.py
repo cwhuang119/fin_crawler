@@ -2,9 +2,32 @@ import time
 import datetime
 import copy
 from .utils import convert_num,convert_tw_year
-from .tw_col_names import convert_col_names
+from .tw_col_names import convert_table
 
-def parse(stock_data,**kwargs):
+fields = [
+    "日期",
+    "成交股數",
+    "成交金額",
+    "開盤價",
+    "最高價",
+    "最低價",
+    "收盤價",
+    "漲跌價差",
+    "成交筆數"
+]
+
+num_fields = [
+    "成交股數",
+    "成交金額",
+    "開盤價",
+    "最高價",
+    "最低價",
+    "收盤價",
+    "漲跌價差",
+    "成交筆數"
+]
+
+def parse(data,**kwargs):
     """
     資料來源:
         https://www.twse.com.tw/zh/page/trading/exchange/STOCK_DAY.html
@@ -13,7 +36,7 @@ def parse(stock_data,**kwargs):
         key: data
     欄位依序為:
         日期:date
-        成交股數:vol
+        成交股數:volume
         成交金額:trade_amount
         開盤價:open
         最高價:high
@@ -34,46 +57,40 @@ def parse(stock_data,**kwargs):
     
     """
 
-    formated_daily_stock_data = {
-            "stock_id":[],
-            "vol":[],
-            "trade_amount":[],
-            "open":[],
-            "high":[],
-            "low":[],
-            "close":[],
-            "spread":[],
-            "trade_num":[],
-            "date":[],
-        }
+    formated_data = []
 
-    status = stock_data.get('stat')
-    stock_id = kwargs['stock_id']
+    status = data.get('stat')
     if status=='OK':
-        if 'data' in stock_data:
-            data = stock_data['data']
+        if 'data' in data:
+            rows = data['data']
+            col_names = data['fields']
         else:
             print(f"Can't not find key 'data' in response data ")
-            return formated_daily_stock_data
+            return formated_data
 
-        for d in data:
-            date,vol,trade_amount,open_price,high_price,low_price,close_price,spread,trade_num = d
-            date = convert_tw_year(date)
-            formated_daily_stock_data['stock_id'].append(stock_id)
-            formated_daily_stock_data['date'].append(date)
-            formated_daily_stock_data['vol'].append(convert_num(vol))
-            formated_daily_stock_data['open'].append(convert_num(open_price))
-            formated_daily_stock_data['high'].append(convert_num(high_price))
-            formated_daily_stock_data['low'].append(convert_num(low_price))
-            formated_daily_stock_data['close'].append(convert_num(close_price))
-            formated_daily_stock_data['spread'].append(convert_num(spread))
-            formated_daily_stock_data['trade_num'].append(convert_num(trade_num))
-            formated_daily_stock_data['trade_amount'].append(convert_num(trade_amount))
+        for row in rows:
+            template = {}
+            for col_name,value in zip(col_names,row):
+                template[col_name]=value
+
+            formated_row = {}
+            for col_name,value in template.items():
+                converted_col_name = convert_table[col_name]
+
+                if col_name in num_fields:
+                    value = convert_num(value)
+                elif col_name == '日期':
+                    value = convert_tw_year(value)
+                
+                formated_row[converted_col_name]=value
+            formated_row['stock_id']=kwargs['stock_id']
+            formated_data.append(formated_row)
+
+        return formated_data
         
     else:
         print(status)
-        return formated_daily_stock_data
-    return formated_daily_stock_data
+        return formated_data
 
 def gen_params(**params):
     """
@@ -119,24 +136,7 @@ def gen_params(**params):
 
 def gen_params_example():
     example_params = {'date':'20220922','stock_id':'2330'}
-    print('爬取當月stcokNo的股票價格')
+    print('Get monthly stock price!')
     print(f'ex:{example_params}')
     return example_params
 
-def gen_col_names():
-    items = [
-        "stock_id",
-        "vol",
-        "trade_amount",
-        "open",
-        "high",
-        "low",
-        "close",
-        "spread",
-        "trade_num",
-        "date"
-    ]
-
-    col_names = convert_col_names(items)
-    
-    return col_names

@@ -2,35 +2,52 @@ import time
 import datetime
 import copy
 from .utils import convert_num
-from .tw_col_names import convert_col_names
+from .tw_col_names import convert_table
 
 
-items = [
-        "stock_id",
-        "stock_name",
-        "IIFI_buy_amount_woIIFD",
-        "IIFI_sell_amount_woIIFD",
-        "IIFI_net_amount_woIIFD",
-        "IIFD_buy_amount",
-        "IIFD_sell_amount",
-        "IIFD_net_amount",
-        "IIIT_buy_amount",
-        "IIIT_sell_amount",
-        "IIIT_net_amount",
-        "IID_net_amount",
-        "IID_buy_amount_self",
-        "IID_sell_amount_self",
-        "IID_net_amount_self",
-        "IID_buy_amount_hedging",
-        "IID_sell_amount_hedging",
-        "IID_net_amount_hedging",
-        "II_net_amount",
-        "date"
+fields = [
+        "證券代號",
+        "證券名稱",
+        "外陸資買進股數(不含外資自營商)",
+        "外陸資賣出股數(不含外資自營商)",
+        "外陸資買賣超股數(不含外資自營商)",
+        "外資自營商買進股數",
+        "外資自營商賣出股數",
+        "外資自營商買賣超股數",
+        "投信買進股數",
+        "投信賣出股數",
+        "投信買賣超股數",
+        "自營商買賣超股數",
+        "自營商買進股數(自行買賣)",
+        "自營商賣出股數(自行買賣)",
+        "自營商買賣超股數(自行買賣)",
+        "自營商買進股數(避險)",
+        "自營商賣出股數(避險)",
+        "自營商買賣超股數(避險)",
+        "三大法人買賣超股數"
     ]
+num_fields = [
+        "外陸資買進股數(不含外資自營商)",
+        "外陸資賣出股數(不含外資自營商)",
+        "外陸資買賣超股數(不含外資自營商)",
+        "外資自營商買進股數",
+        "外資自營商賣出股數",
+        "外資自營商買賣超股數",
+        "投信買進股數",
+        "投信賣出股數",
+        "投信買賣超股數",
+        "自營商買賣超股數",
+        "自營商買進股數(自行買賣)",
+        "自營商賣出股數(自行買賣)",
+        "自營商買賣超股數(自行買賣)",
+        "自營商買進股數(避險)",
+        "自營商賣出股數(避險)",
+        "自營商買賣超股數(避險)",
+        "三大法人買賣超股數"
+]
 
 
-
-def parse(stock_data,**kwargs):
+def parse(data,**kwargs):
     """
     資料來源:
         https://www.twse.com.tw/zh/page/trading/fund/T86.html
@@ -89,34 +106,39 @@ def parse(stock_data,**kwargs):
     """
 
 
-    formated_data = {}
-    for col_name in items:
-        formated_data[col_name]=[]
+    formated_data = []
 
-
-    status = stock_data.get('stat')
+    status = data.get('stat')
     if status=='OK':
-        if 'data' in stock_data:
-            data = stock_data['data']
+        if 'data' in data:
+            rows = data['data']
+            col_names = data['fields']
         else:
             print(f"Can't not find key 'data' in response data ")
             return formated_data
 
-        for d in data:
-            d.append(kwargs['date'])
-            for col_name,value in zip(items,d):
-                if col_name not in ['stock_id','stock_name','date']:
-                    formated_data[col_name].append(convert_num(value))
-                elif col_name=='stock_name':
-                    formated_data[col_name].append(value.strip())
-                else:
-                    formated_data[col_name].append(value)
+        for row in rows:
+            # original data
+            template = {}
+            for col_name,value in zip(col_names,row):
+                template[col_name]=value
+            
+            formated_row = {}
+            #convert data
+            for col_name,value in template.items():
+                converted_col_name = convert_table[col_name]
+                if col_name in num_fields:
+                    value = convert_num(value)
+                if col_name == '證券名稱':
+                    value = value.strip()
+                formated_row[converted_col_name]=value
+            formated_row['date']=kwargs['date']
+            formated_data.append(formated_row)
         
-
+        return formated_data
     else:
         print(status)
         return formated_data
-    return formated_data
 
 def gen_params(**params):
     """
@@ -155,12 +177,6 @@ def gen_params(**params):
 
 def gen_params_example():
     example_params = {'date':'20221012'}
-    print('爬取當天三大法人買賣超')
+    print('Get 3 institutional investors daily record!')
     print(f'ex:{example_params}')
     return example_params
-
-def gen_col_names():
-
-    col_names = convert_col_names(items)
-    
-    return col_names

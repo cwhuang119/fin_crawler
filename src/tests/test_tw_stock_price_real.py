@@ -5,12 +5,31 @@ class Test_tw_stock_price_real(unittest.TestCase):
 
     def test_reuqest(self):
         time.sleep(4)
-        result = {
-            'date':['20210901', '20210902', '20210903', '20210906', '20210907', '20210908', '20210909', '20210910', '20210913', '20210914', '20210915', '20210916', '20210917', '20210922', '20210923', '20210924', '20210927', '20210928', '20210929', '20210930'],
-            'open':[614.0, 613.0, 610.0, 623.0, 634.0, 622.0, 612.0, 615.0, 619.0, 618.0, 610.0, 603.0, 600.0, 586.0, 588.0, 591.0, 600.0, 595.0, 580.0, 580.0],
-            'close':[613.0, 607.0, 620.0, 631.0, 623.0, 619.0, 619.0, 622.0, 615.0, 613.0, 607.0, 600.0, 600.0, 586.0, 588.0, 598.0, 602.0, 594.0, 580.0, 580.0]
-        }
-        data = FinCrawler.get('tw_stock_price',{'date':'20210920','stock_id':'2330'})
-        self.assertEqual(data['open'],result['open'])
-        self.assertEqual(data['date'],result['date'])
-        self.assertEqual(data['close'],result['close'])
+        result_idx1 = {
+            'date': '20220902',
+            'volume': 33877655.0,
+            'trade_amount': 16486942365.0,
+            'open': 488.0,
+            'high': 489.5,
+            'low': 485.0,
+            'close': 485.0,
+            'spread_value': -5.5,
+            'trade_num': 71175.0,
+            'stock_id': '2330'
+            }
+        result_idx5 = {
+            'date': '20220908',
+            'volume': 35355467.0,
+            'trade_amount': 16755699888.0,
+            'open': 473.0,
+            'high': 475.0,
+            'low': 472.0,
+            'close': 475.0,
+            'spread_value': 2.5,
+            'trade_num': 37943.0,
+            'stock_id': '2330'
+            }
+        data = FinCrawler.get('tw_stock_price',{'date':'20220920','stock_id':'2330'})
+
+        self.assertEqual(data[1],result_idx1)
+        self.assertEqual(data[5],result_idx5)

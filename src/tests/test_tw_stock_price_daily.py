@@ -43,133 +43,28 @@ class Test_tw_stock_price_dialy(unittest.TestCase):
                 '113.05',
                 '9',
                 '0.00'],
+            ],
+            'fields9':[
+                "證券代號",
+                "證券名稱",
+                "成交股數",
+                "成交筆數",
+                "成交金額",
+                "開盤價",
+                "最高價",
+                "最低價",
+                "收盤價",
+                "漲跌(+/-)",
+                "漲跌價差",
+                "最後揭示買價",
+                "最後揭示買量",
+                "最後揭示賣價",
+                "最後揭示賣量",
+                "本益比"
             ]
         }
-        result = parse(test_data,**{'date':'20220920'})
-        self.assertEqual(
-            result,
-            {
-                "stock_id":['0050'],
-                "stock_name":['元大台灣50'],
-                "vol":[5999746],
-                "trade_num":[7093],
-                "trade_amount":[675492164],
-                "open":[112.55],
-                "close":[113.05],
-                "high":[113.15],
-                "low":[112.25],
-                "spread":[1],
-                "date":['20220920']
-            }
-        )
+        result = parse(test_data)[0]
+        self.assertEqual(result['spread'],1.0)
+        self.assertEqual(result['stock_id'],'0050')
+        self.assertEqual(result['high'],113.15)
 
-
-        test_data = {
-            'stat':'OK',
-            'data8':[
-                ['0050',
-                '元大台灣50',
-                '5,999,746',
-                '7,093',
-                '675,492,164',
-                '112.55',
-                '113.15',
-                '112.25',
-                '113.05',
-                '<p style= color:red>+</p>',
-                '1.00',
-                '113.00',
-                '205',
-                '113.05',
-                '9',
-                '0.00'],
-            ]
-        }
-        result = parse(test_data,**{'date':'20220920'})
-        self.assertEqual(
-            result,
-            {
-                "stock_id":['0050'],
-                "stock_name":['元大台灣50'],
-                "vol":[5999746],
-                "trade_num":[7093],
-                "trade_amount":[675492164],
-                "open":[112.55],
-                "close":[113.05],
-                "high":[113.15],
-                "low":[112.25],
-                "spread":[1],
-                "date":['20220920']
-            }
-        )
-
-
-
-        empty_result =  {
-            "stock_id":[],
-            "stock_name":[],
-            "vol":[],
-            "trade_num":[],
-            "trade_amount":[],
-            "open":[],
-            "close":[],
-            "high":[],
-            "low":[],
-            "spread":[],
-            "date":[]
-        }
-        
-        # stat is not 'OK'
-        test_data = {
-            'stat':'123',
-            'data9':[
-                ['0050',
-                '元大台灣50',
-                '5,999,746',
-                '7,093',
-                '675,492,164',
-                '112.55',
-                '113.15',
-                '112.25',
-                '113.05',
-                '<p style= color:red>+</p>',
-                '1.00',
-                '113.00',
-                '205',
-                '113.05',
-                '9',
-                '0.00'],
-            ]
-        }
-        result = parse(test_data,**{'date':'20220922'})
-        self.assertEqual(result,empty_result)
-
-        #without key 'data'
-        test_data = {
-            'stat':'OK',
-            'data7':[
-                ['0050',
-                '元大台灣50',
-                '5,999,746',
-                '7,093',
-                '675,492,164',
-                '112.55',
-                '113.15',
-                '112.25',
-                '113.05',
-                '<p style= color:red>+</p>',
-                '1.00',
-                '113.00',
-                '205',
-                '113.05',
-                '9',
-                '0.00'],
-            ]
-        }
-        result = parse(test_data,**{'date':'20220922','stock_id':'2330'})
-        self.assertEqual(result,empty_result)
-
-        #empty test ata
-        test_data = {}
-        result = parse(test_data,**{'date':'20220922','stock_id':'2330'})
-        self.assertEqual(result,empty_result)

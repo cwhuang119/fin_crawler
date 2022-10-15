@@ -17,9 +17,12 @@ def convert_num(num_str):
     return float(num_str.replace(',',''))*factor
 
 
-
-
 def convert_tw_year(date_str):
-    tw_year,month,day = date_str.split('/')
+    if '/' in date_str:
+        tw_year,month,day = date_str.split('/')
+    else:
+        if len(date_str)!=7:
+            raise ValueError
+        tw_year,month,day = date_str[:3],date_str[3:5],date_str[5:7]
     y = int(tw_year)+1911
     return f"{y}{month}{day}"

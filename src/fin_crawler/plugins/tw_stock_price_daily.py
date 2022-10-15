@@ -1,11 +1,48 @@
 
+from dataclasses import fields
 import time
 import datetime
 import copy
 from .utils import convert_num
-from .tw_col_names import convert_col_names
+from .tw_col_names import convert_table
 
-def parse(stock_data,**kwargs):
+
+
+fields = [
+    "證券代號",
+    "證券名稱",
+    "成交股數",
+    "成交筆數",
+    "成交金額",
+    "開盤價",
+    "最高價",
+    "最低價",
+    "收盤價",
+    "漲跌(+/-)",
+    "漲跌價差",
+    "最後揭示買價",
+    "最後揭示買量",
+    "最後揭示賣價",
+    "最後揭示賣量",
+    "本益比"
+    ]
+num_fields = [
+    "成交股數",
+    "成交筆數",
+    "成交金額",
+    "開盤價",
+    "最高價",
+    "最低價",
+    "收盤價",
+    "最後揭示買價",
+    "最後揭示買量",
+    "最後揭示賣價",
+    "最後揭示賣量",
+    "本益比"
+]
+
+
+def parse(data,**kwargs):
 
     """
     資料來源:
@@ -15,22 +52,23 @@ def parse(stock_data,**kwargs):
         key: data9 (新版)
         key: data8 (舊版)
     欄位依序為:
-        證券代號:stock_id
-        證券名稱:stock_name
-        交易股數:vol
-        成交筆數:trade_num
-        成交金額:trade_amount
-        開盤價:open
-        最高價:high
-        最低價:low
-        收盤價:close
-        漲跌(+/-):direction
-        漲跌價差:spread
-        最後揭示買價
-        最後揭示買量
-        最後揭示賣價
-        最後揭示賣量
-        本益比
+        "證券代號":'stock_id',
+        "證券名稱":'stock_name',
+        "成交股數":'volume',
+        "成交筆數":'trade_num',
+        "成交金額":'trade_amount',
+        "開盤價":'open',
+        "最高價":'high',
+        "最低價":'low',
+        "收盤價":'close',
+        "漲跌(+/-)":'up_down',
+        "漲跌價差":'spread_value',
+        "最後揭示買價":'last_buy_price',
+        "最後揭示買量":'last_buy_volume',
+        "最後揭示賣價":'last_sell_price',
+        "最後揭示賣量":'last_sell_volume',
+        "本益比":'PE',
+        '日期': 'date',
     資料範例(20220920第一筆(0050)):
         ['0050',
         '元大台灣50',
@@ -48,61 +86,67 @@ def parse(stock_data,**kwargs):
         '113.05',
         '9',
         '0.00']
+    
     return data:
-        formated_daily_stock_data = {
-            "stock_id":[2330],
-            "stock_name":[台積電],
-            "vol":[xxx],
-            "trade_num":[xxx],
-            "trade_amount":[xxx],
-            "open":[xxx],
-            "close":[xxx],
-            "high":[xxx],
-            "low":[xxx],
-            "spread":[xxx]
-        }
+        formated_data = [
+            {
+                'stock_id':'2330',
+                'stock_name':'台積電',
+                'volume':xxx,
+                'trade_amount':xxx,
+                'open':xxx,
+                'high':xxx,
+                'low':xxx,
+                'spread':xxx
+                'date','2022-10-14'
+            }
+        ]
+
     """
 
-    formated_daily_stock_data = {
-            "stock_id":[],
-            "stock_name":[],
-            "vol":[],
-            "trade_num":[],
-            "trade_amount":[],
-            "open":[],
-            "close":[],
-            "high":[],
-            "low":[],
-            "spread":[],
-            "date":[]
-        }
+    
+    formated_data = []
 
-    status = stock_data.get('stat')
+    status = data.get('stat')
     if status=='OK':
-        if 'data9' in stock_data:
-            daily_stock_data = stock_data['data9']
-        elif 'data8' in stock_data:
-            daily_stock_data = stock_data['data8']
+        if 'data9' in data:
+            rows = data['data9']
+            col_names = data['fields9']
+        elif 'data8' in data:
+            rows = data['data8']
+            col_names = data['fields8']
         else:
-            return formated_daily_stock_data
+            return formated_data
 
-        for stock in daily_stock_data:
-            stock_id,stock_name,vol,trade_num,trade_amount,price_open,price_hight,price_low,price_close,direction,spread = stock[:-5]
-            formated_daily_stock_data['stock_id'].append(stock_id)
-            formated_daily_stock_data['stock_name'].append(stock_name)
-            formated_daily_stock_data['vol'].append(convert_num(vol))
-            formated_daily_stock_data['trade_num'].append(convert_num(trade_num))
-            formated_daily_stock_data['trade_amount'].append(convert_num(trade_amount))
-            formated_daily_stock_data['open'].append(convert_num(price_open))
-            formated_daily_stock_data['high'].append(convert_num(price_hight))
-            formated_daily_stock_data['low'].append(convert_num(price_low))
-            formated_daily_stock_data['close'].append(convert_num(price_close))
-            formated_daily_stock_data['spread'].append(convert_num(spread)*1 if '+' in direction else -1)
-            formated_daily_stock_data['date'].append(kwargs.get('date') or '')
-        return formated_daily_stock_data
+        for row in rows:
+            # original format
+            template = {}
+            for col_name,value in zip(col_names,row):
+                template[col_name]=value
+            
+            formated_row = {}
+            # format data
+            for col_name,value in template.items():
+                convert_col_name = convert_table[col_name]
+
+                # convert to number and insert
+                if col_name in num_fields and col_name:
+                    value = convert_num(value)
+                
+                if col_name not in ['漲跌(+/-)','漲跌價差']:
+                    formated_row[convert_col_name]=value
+            
+            # add converted data
+            formated_row['spread'] = convert_num(template['漲跌價差'])*1 if '+' in template['漲跌(+/-)'] else -1
+            # add date
+            formated_row['date'] = kwargs.get('date') or ''
+            # append into array
+            formated_data.append(formated_row)
+
+        return formated_data
     else:
         print(status)
-        return formated_daily_stock_data
+        return formated_data
 
 
 
@@ -153,25 +197,8 @@ def gen_params(**params):
 
 def gen_params_example():
     example_params = {'date':'20220920'}
-    print('爬取其中一天全部股票的價格')
+    print('Get daily stock price!')
     print(f'ex:{example_params}')
     return example_params
 
-def gen_col_names():
 
-    items = [
-        "stock_id",
-        "stock_name",
-        "vol",
-        "trade_amount",
-        "open",
-        "high",
-        "low",
-        "close",
-        "spread",
-        "trade_num",
-        "date"
-    ]
-    col_names = convert_col_names(items)
-
-    return col_names

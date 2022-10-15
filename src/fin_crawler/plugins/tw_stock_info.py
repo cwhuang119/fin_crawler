@@ -1,48 +1,42 @@
 
-
-
-
-
-
-import time
-import datetime
 import copy
-from .tw_col_names import convert_col_names
+from dataclasses import fields
+from .tw_col_names import convert_table
+from .utils import convert_tw_year
 
-
-items = [
-    "update_dated",
-    "stock_id",
-    "company_name",
-    "stock_name",
-    "foreign_register_country",
-    "industry_type",
-    "address",
-    "tax_id",
-    "chairman",
-    "CEO",
-    "spokesman",
-    "spokesman_title",
-    "deputy_spokesman",
-    "phone",
-    "establishment_date",
-    "IPO_date",
-    "common_shares_price",
-    "paid_in_capital",
-    "private_shares_num",
-    "special_shares_num",
-    "financial_report_type",
-    "stock_transfer_agency",
-    "stcok_transfer_phone",
-    "stock_transfer_address",
-    "accounting_firm",
-    "accountant_1",
-    "accountant_2",
-    "stock_name_en",
-    "address_en",
-    "fax",
-    "email",
-    "website",
+fields = [
+    "出表日期",
+    "公司代號",
+    "公司名稱",
+    "公司簡稱",
+    "外國企業註冊地國",
+    "產業別",
+    "住址",
+    "營利事業統一編號",
+    "董事長",
+    "總經理",
+    "發言人",
+    "發言人職稱",
+    "代理發言人",
+    "總機電話",
+    "成立日期",
+    "上市日期",
+    "普通股每股面額",
+    "實收資本額",
+    "私募股數",
+    "特別股",
+    "編制財務報表類型",
+    "股票過戶機構",
+    "過戶電話",
+    "過戶地址",
+    "簽證會計師事務所",
+    "簽證會計師1",
+    "簽證會計師2",
+    "英文簡稱",
+    "英文通訊地址",
+    "傳真機號碼",
+    "電子郵件信箱",
+    "網址"
 ]
 
 
@@ -85,15 +79,11 @@ def parse(data,**kwargs):
         電子郵件信箱:email
         網址:website
 
-    資料範例第一筆(20220924-2330):
-
-    
     """
 
-    formated_data = {}
+    formated_data = []
     
-    for col_name in items:
-        formated_data[col_name]=[]
+
     try:
         decoded_data = data.decode('utf-8')
         rows = decoded_data.split('\r\n')
@@ -102,8 +92,19 @@ def parse(data,**kwargs):
         
         for row in rows:
             row_data = [x.replace('"','') for x in row.split('",')]
-            for col_name,d in zip(items,row_data):
-                formated_data[col_name].append(d.replace('"',''))
+            template = {}
+
+            for col_name,value in zip(col_names,row_data):
+                template[col_name]=value
+            
+            formated_row = {}
+            for col_name,value in template.items():
+                converted_col_name = convert_table[col_name]
+                value = value.replace('"','')
+                if col_name =='出表日期':
+                    value = convert_tw_year(value)
+                formated_row[converted_col_name] = value
+            formated_data.append(formated_row)
         return formated_data
     except:
         pass
@@ -139,13 +140,6 @@ def gen_params(**params):
 
 def gen_params_example():
     example_params = {}
-    print('爬取公司資訊')
+    print('Get company info!')
     print(f'ex:{example_params}')
     return example_params
-
-def gen_col_names():
-
-
-    col_names = convert_col_names(items)
-    
-    return col_names
