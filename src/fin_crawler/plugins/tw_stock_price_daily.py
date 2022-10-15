@@ -130,13 +130,17 @@ def parse(data,**kwargs):
                 convert_col_name = convert_table[col_name]
 
                 # convert to number and insert
-                if col_name in num_fields and col_name:
-                    value = convert_num(value)
-                
+                if col_name in num_fields:
+                    try:
+                        value = convert_num(value)
+                    except:
+                        print(value)
                 if col_name not in ['漲跌(+/-)','漲跌價差']:
                     formated_row[convert_col_name]=value
             
             # add converted data
+            print(template['漲跌價差'])
+            print(template['漲跌(+/-)'])
             formated_row['spread'] = convert_num(template['漲跌價差'])*1 if '+' in template['漲跌(+/-)'] else -1
             # add date
             formated_row['date'] = kwargs.get('date') or ''
