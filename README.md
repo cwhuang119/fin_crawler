@@ -54,3 +54,8 @@ ex:{'date': '20220920'}
  'spread': 1.0,
  'date': '20220920'}
 ```
+
+### Unittest
+```bash
+python -m unittest discover -s './src' -p '*test*.py'
+```
