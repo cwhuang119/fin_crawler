@@ -1,5 +1,5 @@
 # Fin Crawler
-
+![test](https://github.com/cwhuang119/fin_crawler/blob/main/.github/workflows/test.yaml/badge.svg)
 
 ## Features
 - Fetch Finalcial data like stock price or future price etc.
@@ -58,4 +58,6 @@ ex:{'date': '20220920'}
 ### Unittest
 ```bash
 python -m unittest discover -s './src' -p '*test*.py'
+python -m coverage run -m unittest discover -s './src' -p '*test*.py'
+python -m coverage report
 ```
