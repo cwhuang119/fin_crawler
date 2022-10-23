@@ -1,6 +1,5 @@
 
 import copy
-from dataclasses import fields
 from .tw_col_names import convert_table
 from .utils import convert_tw_year
 
