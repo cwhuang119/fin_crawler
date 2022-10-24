@@ -1,7 +1,7 @@
 # Fin Crawler
 [![license](https://img.shields.io/crates/l/Apa)](LICENSE)
 [![pypi version](https://img.shields.io/pypi/v/fin-crawler)](https://pypi.org/project/fin-crawler/)
-[![Test](https://github.com/cwhuang119/fin_crawler/actions/workflows/test.yml/badge.svg)](https://github.com/cwhuang119/fin_crawler/actions)
+[![Test](https://github.com/cwhuang119/baby_tracker/actions/workflows/docker-image.yml/badge.svg)](https://github.com/cwhuang119/baby_tracker/actions)
 
 ## Features
 - Fetch Finalcial data like stock price or future price etc.
