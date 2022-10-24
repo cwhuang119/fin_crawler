@@ -5,7 +5,7 @@ class Test_tw_stock_info_real(unittest.TestCase):
 
     def test_request(self):
         time.sleep(4)
-        result_idx1 = {'update_date': '20221023',
+        result_idx1 = {
             'stock_id': '1102',
             'company_name': '亞洲水泥股份有限公司',
             'stock_name': '亞泥',
@@ -37,7 +37,7 @@ class Test_tw_stock_info_real(unittest.TestCase):
             'fax': '02-2378-5191',
             'email': 'service@acc.com.tw',
             'website': 'www.acc.com.tw'}
-        result_idx3 = {'update_date': '20221023',
+        result_idx3 = {
             'stock_id': '1104',
             'company_name': '環球水泥股份有限公司',
             'stock_name': '環泥',
@@ -70,6 +70,8 @@ class Test_tw_stock_info_real(unittest.TestCase):
             'email': 'ucc@ucctw.com',
             'website': 'www.ucctw.com'}
         data = FinCrawler.get('tw_stock_info',{})
+        del data[1]['update_date']
+        del data[3]['update_date']
         self.assertEqual(data[1],result_idx1)
         self.assertEqual(data[3],result_idx3)
 
