@@ -1,5 +1,6 @@
 # Fin Crawler
 ![license](https://img.shields.io/crates/l/Apa)
+![Test](https://github.com/cwhuang119/fin_crawler/actions/workflows/test.yml/badge.svg?event=push)
 
 ## Features
 - Fetch Finalcial data like stock price or future price etc.
